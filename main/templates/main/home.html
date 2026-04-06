@@ -10,6 +10,8 @@
         <div>
             <h5 class="card-title">{{project.title}}</h5>
             <p>{{project.description}}</p>
+            <span class="badge bg-success"><strong>Stage:</strong> {{ project.get_stage_display }}</span>
+<span class="badge bg-success"><strong>Support Required:</strong> {{ project.support_required }}</span>
         </div>
         
     </div>
@@ -20,6 +22,7 @@
             <form method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger mt-2" name="project-id" value={{project.id}}  >Delete</button>
+                <button type="submit" class="btn btn-success mt-2" name="project-id" value={{project.id}}  >Edit</button>
                 
             </form>
         
@@ -28,6 +31,7 @@
             <form method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-success mt-2" name="project-id" value={{project.id}}  >✋</button>
+                
             </form>
             {% endif %}
         </div>
