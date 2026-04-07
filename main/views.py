@@ -4,10 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from .models import Project, Milestone
 
+
+# home page 
 @login_required(login_url="/login")
 def home(request):
-    projects = Project.objects.all()
-
+    projects = Project.objects.all().order_by('-updated_at')  # most recently updated posts to the top (chronological order feed)
     if request.method == "POST":
         project_id = request.POST.get("project-id")
         content = request.POST.get("content")
@@ -16,13 +17,14 @@ def home(request):
         # deletion
         if project and project.author == request.user: 
             project.delete()
+            return redirect('/home')
 
       
     return render(request, 'main/home.html', {
         "projects":projects})
 
 
-
+# registration
 def sign_up(request): 
     if request.method == 'POST': 
         form = RegisterForm(request.POST)
@@ -37,10 +39,12 @@ def sign_up(request):
     return render(request, 'registration/sign_up.html', {"form": form })
 
 
+# log out
 def logOut(request): 
     logout(request)
     return redirect("/login")
 
+# login
 @login_required(login_url="/login")
 def create_project(request): 
     if request.method == 'POST': 
@@ -54,6 +58,9 @@ def create_project(request):
         form = ProjectForm() 
     
     return render(request, 'main/create_project.html', {"form": form })
+
+
+# update existing project 
 
 @login_required(login_url="/login")
 def update_project(request, pk): 
@@ -71,9 +78,10 @@ def update_project(request, pk):
                     content=content
                 )
                 # Redirect back to the same edit page to see the new update
+                project.save()
                 return redirect('update_project', pk=project.pk)
 
-        # CHECK: Is the user trying to save the whole project?
+        # check if the user trying to save the whole project
         elif form.is_valid():
             form.save()
             return redirect("/home")
