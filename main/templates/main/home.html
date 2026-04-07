@@ -1,41 +1,50 @@
 {% extends 'main/base.html' %}
 
 {% block title %} Home Page {% endblock %}
+
 {% block content %}
+    {% for project in projects %}
+        <div class="card mt-2">
+            <div class="card-header">
+                <strong>@{{ project.author.username }}</strong>
+            </div>
 
-{% for project in projects %}
-<div class="card mt-2">
-    <div class="card-header"><strong>@{{project.author.username}}</strong></div>
-    <div class="card-body d-flex  flex-row justify-content-between">
-        <div>
-            <h5 class="card-title">{{project.title}}</h5>
-            <p>{{project.description}}</p>
-            <span class="badge bg-success"><strong>Stage:</strong> {{ project.get_stage_display }}</span>
-<span class="badge bg-success"><strong>Support Required:</strong> {{ project.support_required }}</span>
-        </div>
-        
-    </div>
-    <div class="card-footer text-muted">
-        {{project.created_at}}
-        <div>
-            {% if user == project.author %}
-    <!-- Update button (GOES TO EDIT PAGE) -->
-    <a href="{% url 'update_project' project.id %}" class="btn btn-success mt-2">
-        Update
-    </a>
+            <div class="card-body d-flex flex-row justify-content-between">
+                <div>
+                    <h5 class="card-title">{{ project.title }}</h5>
+                    <p>{{ project.description }}</p>
+                    <span class="badge bg-success">
+                        <strong>Stage:</strong> {{ project.get_stage_display }}
+                    </span>
+                    <span class="badge bg-success">
+                        <strong>Support Required:</strong> {{ project.support_required }}
+                    </span>
+                </div>
+            </div>
 
-    <!-- Delete button (STAYS A FORM) -->
-    <form method="post" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger mt-2" name="project-id" value="{{ project.id }}">
-            Delete
-        </button>
-    </form>
-{% endif %}
+            <div class="card-footer text-muted">
+                {{ project.created_at }}
+                
+                <div>
+                    {% if user == project.author %}
+                        <a href="{% url 'update_project' project.id %}" class="btn btn-success mt-2">
+                            Update
+                        </a>
+
+                        <form method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="project-id" value="{{ project.id }}">
+                            <button type="submit" name="delete" value="1" class="btn btn-danger mt-2">
+                                Delete
+                            </button>
+                        </form>
+                    {% endif %}
+
+                    
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-{% empty %}
-<p>No projects yet.</p>
-{% endfor %}
+    {% empty %}
+        <p>No projects yet.</p>
+    {% endfor %}
 {% endblock %}

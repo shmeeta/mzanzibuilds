@@ -3,10 +3,38 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h2>Edit Project: {{ project.title }}</h2>
+<h2 class="mt-5">Edit Project: {{ project.title }}</h2>
+
 <form method="post">
     {% csrf_token %}
     {{ form|crispy }}
-    <button type="submit" class="btn btn-success">Save Update</button>
+
+    <div class="mt-4">
+        <h6>Progress Updates:</h6>
+        {% for milestone in project.milestones.all %}
+            <div class="border p-2 mb-1">
+                <strong>@{{ milestone.author.username }}</strong>: {{ milestone.content }}
+                <br>
+                <small class="text-muted">{{ milestone.created_at }}</small>
+            </div>
+        {% empty %}
+            <p>No updates yet.</p>
+        {% endfor %}
+
+        <div class="mt-3">
+            <input type="text" name="content" class="form-control mb-2" placeholder="Add an update...">
+            <div class="d-flex">
+                <button type="submit" name="add-milestone" class="btn btn-link text-success p-0 ms-auto" style="text-decoration: none;">
+                    +Add Update
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="d-flex mb-5">
+        <button type="submit" class="btn btn-success ms-auto">Save Project Changes</button>
+    </div>
 </form>
 {% endblock %}

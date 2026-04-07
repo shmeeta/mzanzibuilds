@@ -25,3 +25,14 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title + "\n" + self.description
+    
+
+class Milestone(models.Model): 
+    project= models.ForeignKey(Project, on_delete=models.CASCADE, related_name="milestones")
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField(max_length=400)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self): 
+        return  f"{self.project.title} - {self.content[:20]}"
+

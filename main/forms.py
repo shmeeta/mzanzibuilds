@@ -1,7 +1,7 @@
 from django import forms 
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth.models import User
-from .models import Project
+from .models import Project, Milestone
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -15,3 +15,8 @@ class ProjectForm(forms.ModelForm):
     class Meta: 
         model = Project
         fields = ["title", "description", "stage", "support_required"]
+
+class MileStoneForm(forms.ModelForm): 
+    class Meta: 
+        model = Milestone
+        fields = ["content"]
