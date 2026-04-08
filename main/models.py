@@ -35,4 +35,27 @@ class Milestone(models.Model):
 
     def __str__(self): 
         return  f"{self.project.title} - {self.content[:20]}"
+    
+
+class Notification(models.Model): 
+
+    TYPES = [
+        ('celebrate', 'Celebration'),
+        ('collaborate', 'Collaboration'),
+    ]
+
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications' )
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    notification_type = models.CharField(max_length=50, choices=TYPES)
+    created_at= models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    
+    @property
+    def unread_exists(self): 
+        return Notification.objects.filter(recipient=self.recipient, is_read=False).exists()
+
+    def __str__(self):
+        return f"{self.notification_type} from {self.sender.username}"
+
 

@@ -41,7 +41,9 @@
                             </button>
                         </form>
                     {% endif %}
-
+                    <a href="{% url 'send_collab_request' project.id %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-person-raised-hand"></i> Collaborate
+                    </a>
                     
                 </div>
             </div>

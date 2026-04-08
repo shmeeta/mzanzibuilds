@@ -28,7 +28,16 @@
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/notifications"><i class="bi bi-bell"></i></a>
+                        <a class="nav-link" href="{% url 'notifications' %}">
+       
+                    {% if user.notifications.filter.exists %}
+           
+                     {% if user.notifications.all.0.unread_exists %}
+                        <i class="bi bi-bell-fill fs-5 text-warning"></i> {% else %}
+                        <i class="bi bi-bell fs-5"></i> {% endif %}
+                    {% else %}
+                        <i class="bi bi-bell fs-5"></i> {% endif %}
+                        </a>
                     </li>
                     <span class="navbar-text"> {{user.username}} | </span>
                     <li class="nav-item">

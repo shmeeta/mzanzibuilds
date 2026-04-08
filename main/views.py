@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegisterForm, ProjectForm, MileStoneForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
-from .models import Project, Milestone
+from .models import Project, Milestone, Notification
 
 
 # home page 
@@ -103,3 +103,48 @@ def update_project(request, pk):
             return redirect("/home")
 
     return render(request, 'main/edit_project.html', {"form": form, "project": project})
+
+
+@login_required(login_url="/login")
+def send_celebration_notification(request, project_id): 
+    project = get_object_or_404(Project, id=project_id) 
+    author = project.author 
+    if author != request.user: 
+        Notification.objects.create(
+            recipient=author, 
+            sender=request.user, 
+            project=project, 
+            notification_type='celebrate' 
+        )
+    return redirect('celebration_wall')
+
+@login_required(login_url="/login")
+def send_collaboration_request(request, project_id): 
+    project = get_object_or_404(Project, id=project_id)
+    author = project.author
+    if author != request.user: 
+        Notification.objects.create(
+            recipient=author, 
+            sender=request.user, 
+            project=project, 
+            notification_type='collaborate' 
+        )
+    return redirect("home")
+
+
+@login_required(login_url="/login")
+def notifications_view(request):
+    notifications = request.user.notifications.all().order_by('-created_at')
+    
+    #update the bell icon
+    notifications.filter(is_read=False).update(is_read=True)
+
+    # notification deletion
+    if request.method == 'POST':
+        notification_id = request.POST.get("notification-id")
+        notification = get_object_or_404(Notification, id=notification_id, recipient=request.user)
+        
+        notification.delete()
+        return redirect('notifications') 
+
+    return render(request, 'main/notifications.html', {'notifications': notifications})
