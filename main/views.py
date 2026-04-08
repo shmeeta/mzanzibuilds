@@ -27,13 +27,18 @@ def home(request):
 @login_required(login_url="/login")
 def celebration_wall(request): 
     projects = Project.objects.all().order_by('-updated_at')  # most recently updated posts to the top (chronological order feed)
-    if request.method == "POST":
-        project_id = request.POST.get("project-id")
-        content = request.POST.get("content")
-        project = Project.objects.filter(id=project_id).first()
+    
+    # get project ids the user has already congratulated (to prevent spam)
+    user_celebrations = Notification.objects.filter(
+        sender=request.user, 
+        notification_type = 'celebrate'
+
+    ).values_list('project_id', flat=True)
        
 
-    return render(request, 'main/celebration_wall.html', {"projects":projects})
+    return render(request, 'main/celebration_wall.html', {
+        "projects":projects, 
+        "user_celebrations": user_celebrations})
 
 
 
@@ -84,7 +89,7 @@ def update_project(request, pk):
     form = ProjectForm(request.POST or None, instance=project)
 
     if request.method == "POST":
-        # CHECK: Is the user trying to add a milestone?
+        # check if user is trying to add milestone
         if "add-milestone" in request.POST:
             content = request.POST.get("content")
             if content:
@@ -109,12 +114,22 @@ def update_project(request, pk):
 def send_celebration_notification(request, project_id): 
     project = get_object_or_404(Project, id=project_id) 
     author = project.author 
+
+    # create notification if user is not author and this notification hasn't been sent yet
     if author != request.user: 
-        Notification.objects.create(
-            recipient=author, 
+        already_sent  =Notification.objects.filter(
             sender=request.user, 
-            project=project, 
-            notification_type='celebrate' 
+            project = project, 
+            notification_type = 'celebrate'
+
+        ).exists()
+    
+    if not already_sent: 
+        Notification.objects.create(
+            recipient= author, 
+            sender = request.user, 
+            project = project, 
+            notification_type = 'celebrate'
         )
     return redirect('celebration_wall')
 
