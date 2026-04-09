@@ -1,0 +1,54 @@
+{% extends 'main/base.html' %}
+
+{% block title %} User Profile {% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    
+    <div class="row d-flex justify-content-center">
+        
+        <div class="col-md-7">
+            
+            <div class="card p-3 py-4">
+                
+                <div class="text-center">
+                    <img src="{{ profile_user.profile.profile_photo.url}}" width="100" class="rounded-circle">
+                </div>
+                
+                <div class="text-center mt-3">
+                    <h5 class="mt-2 mb-2">{{user.username}}</h5>
+                    <span class="bg-success p-1 px-4 rounded text-white ">{{profile_user.profile.profession}}</span>
+                    
+                  
+                    
+                    <div class="px-4 mt-1">
+                        <p class="fonts">{{profile_user.profile.bio}}</p>
+                    
+                    </div>
+                    
+              
+                    
+                    <div class="buttons mt-3">
+                        {% if user == profile_user %}
+                         <a href="{% url 'edit_profile' %}" class="btn btn-dark px-4">Edit Profile</a>
+                        {% else %}
+                        <button class="btn btn-outline-primary px-4">Message</button>
+                         <button class="btn btn-primary px-4 ms-3">Contact</button>
+                        {% endif %}
+                    </div>
+                    
+                    
+                </div>
+                
+               
+                
+                
+            </div>
+            
+        </div>
+        
+    </div>
+    
+</div>
+
+{% endblock %}
