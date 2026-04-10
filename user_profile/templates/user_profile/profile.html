@@ -7,21 +7,21 @@
     
     <div class="row d-flex justify-content-center">
         
-        <div class="col-md-7">
+        <div >
             
             <div class="card p-3 py-4">
                 
                 <div class="text-center">
-                    <img src="{{ profile_user.profile.profile_photo.url}}" width="100" class="rounded-circle">
+                    <img src="{{ profile_user.profile.profile_photo.url}}" width="150" height="150" class="rounded-circle">
                 </div>
                 
                 <div class="text-center mt-3">
-                    <h5 class="mt-2 mb-2">{{profile_user.username}}</h5>
-                    <span class="bg-success p-1 px-4 rounded text-white ">{{profile_user.profile.profession}}</span>
+                    <h2 class="mt-2 mb-3">{{profile_user.username}}</h2>
+                   <span class="bg-success p-2 px-5 rounded-pill text-white fs-5 fw-light  ">{{profile_user.profile.profession}}</span>
                     
                   
                     
-                    <div class="px-4 mt-1">
+                    <div class="px-4 mt-1 fs-5 mt-2" >
                         <p class="fonts">{{profile_user.profile.bio}}</p>
                     
                     </div>
@@ -32,7 +32,7 @@
                         {% if user == profile_user %}
                          <a href="{% url 'edit_profile' %}" class="btn btn-dark px-4">Edit Profile</a>
                         {% else %}
-                        <a href="mailto:{{ profile_user.email }}" class="btn btn-outline-primary px-4">Email</a>
+                        <a href="mailto:{{ profile_user.email }}" class="btn btn-outline-success px-4">Email</a>
                          
                         {% endif %}
                     </div>
@@ -48,7 +48,7 @@
         </div>
         
     </div>
-    <div><h1>Projects</h1></div>
+    <div class="mt-5"><h1 >Projects</h1></div>
      {% for project in projects %}
     
         <div class="card mt-3 mb-3" >

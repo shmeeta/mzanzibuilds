@@ -8,7 +8,7 @@
     <p class="mb-4 text-center">Below is a list of completed projects. Congratulate the author on their achievement!</p>
     
     {% for project in projects %}
-        {# We check project.stage against the internal key 'Completed' #}
+        {#check project.stage against the internal key 'Completed' #}
         {% if project.stage == "Completed" %}
             <div class="card mt-3 shadow-sm border-warning"> <div class="card-header bg-white">
                    <a href="{% url 'profile_page' username=project.author.username %}" class="text-decoration-none text-dark">
