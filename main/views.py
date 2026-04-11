@@ -97,10 +97,14 @@ def create_project(request):
 @login_required(login_url="/login")
 def update_project(request, pk): 
     project = get_object_or_404(Project, pk=pk)
+    # Ensure only the author can edit
+    if project.author != request.user:
+        return redirect('home')
+
     form = ProjectForm(request.POST or None, instance=project)
 
     if request.method == "POST":
-        # check if user is trying to add milestone
+    
         if "add-milestone" in request.POST:
             content = request.POST.get("content")
             if content:
@@ -109,13 +113,15 @@ def update_project(request, pk):
                     author=request.user,
                     content=content
                 )
-                # Redirect back to the same edit page to see the new update
                 project.save()
-                return redirect('update_project', pk=project.pk)
 
-        # check if the user trying to save the whole project
-        elif form.is_valid():
+        #check if main project form needs saving
+        if form.is_valid():
             form.save()
+            # If they just added a milestone keep them on the edit page
+            if "add-milestone" in request.POST:
+                return redirect('update_project', pk=project.pk)
+            
             return redirect("/home")
 
     return render(request, 'main/edit_project.html', {"form": form, "project": project})
